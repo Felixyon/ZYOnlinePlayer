@@ -1,47 +1,22 @@
-package cc.xpedia.tv.Service;
+package cc.xpedia.tv.music.player.util;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.springframework.stereotype.Service;
+/**
+ * url常用Util
+ *
+ * @author Xpedia
+ */
+public class UrlUtil {
 
-@Service
-public class BilibiliService {
-
-    //获取排行榜全站榜数据：即获取最近流行的视频数据
-    public String getRecentHot() {
-        HttpClient httpClient = HttpClients.createDefault();
-        HttpGet req = new HttpGet("http://www.bilibili.com/index/rank/all-3-0.json");
-        req.addHeader("Accept", "application/json, text/javascript, */*; q=0.01");
-        req.addHeader("Referer", "http://www.bilibili.com/ranking");
-        req.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
-        req.addHeader("X-Requested-With", "XMLHttpRequest");
-
-        HttpResponse rep = null;
-        String resultlist = "";
-        try {
-            rep = httpClient.execute(req);
-            HttpEntity repEntity = rep.getEntity();
-            String content = EntityUtils.toString(repEntity);
-            resultlist = unicodeToUtf8(content);
-
-            System.out.println(resultlist);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return resultlist;
-
-    }
-
-    //将get到的response的unicode编码转化为utf-8格式，可以进行输出和存储
+    /**
+     * 将get到的response的unicode编码转化为utf-8格式，可以进行输出和存储
+     *
+     * @param theString 输入字符
+     * @return utf8字符
+     */
     public static String unicodeToUtf8(String theString) {
         char aChar;
         int len = theString.length();
-        StringBuffer outBuffer = new StringBuffer(len);
+        StringBuilder outBuffer = new StringBuilder(len);
         for (int x = 0; x < len; ) {
             aChar = theString.charAt(x++);
             if (aChar == '\\') {
@@ -87,18 +62,20 @@ public class BilibiliService {
                     }
                     outBuffer.append((char) value);
                 } else {
-                    if (aChar == 't')
+                    if (aChar == 't') {
                         aChar = '\t';
-                    else if (aChar == 'r')
+                    } else if (aChar == 'r') {
                         aChar = '\r';
-                    else if (aChar == 'n')
+                    } else if (aChar == 'n') {
                         aChar = '\n';
-                    else if (aChar == 'f')
+                    } else if (aChar == 'f') {
                         aChar = '\f';
+                    }
                     outBuffer.append(aChar);
                 }
-            } else
+            } else {
                 outBuffer.append(aChar);
+            }
         }
         return outBuffer.toString();
     }
